@@ -13,8 +13,9 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <ConnectedRouter history={history}>
-        <CssBaseline />
+        
         <App />
+        <CssBaseline />
       </ConnectedRouter>
     </Provider>
   </React.StrictMode>,

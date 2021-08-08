@@ -5,6 +5,7 @@ import ListItem, { ListItemProps } from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { Dashboard, PeopleAlt } from '@material-ui/icons';
+import { NavLink } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -12,6 +13,13 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       maxWidth: 360,
     },
+    link: {
+      color: 'inherit',
+      textDecoration: 'none',
+      '& .active > div': {
+        backgroundColor: theme.palette.action.selected,
+      }
+    }
   })
 );
 
@@ -25,18 +33,22 @@ export function SideBar() {
   return (
     <div className={classes.root}>
       <List component="nav" aria-label="main mailbox folders">
-        <ListItem button>
-          <ListItemIcon>
-            <Dashboard />
-          </ListItemIcon>
-          <ListItemText primary="DashBoard" />
-        </ListItem>
+        <NavLink to="/admin/dashboard" className={classes.link}>
+          <ListItem button>
+            <ListItemIcon>
+              <Dashboard />
+            </ListItemIcon>
+            <ListItemText primary="DashBoard" />
+          </ListItem>
+        </NavLink>
+        <NavLink to="/admin/students" className={classes.link}>
         <ListItem button>
           <ListItemIcon>
             <PeopleAlt />
           </ListItemIcon>
           <ListItemText primary="Student" />
         </ListItem>
+        </NavLink>
       </List>
     </div>
   );

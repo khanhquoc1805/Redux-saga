@@ -1,12 +1,14 @@
 import { Box, makeStyles } from '@material-ui/core';
 import React from 'react';
-import { Header,SideBar } from '../Common'
-
+import { Header, SideBar } from '../Common';
+import { Switch, Route } from 'react-router-dom';
+import DashBoard from '../../features/dashboard/DashBoard';
+import Students from '../../features/student/Students';
 const useStyle = makeStyles((theme) => ({
   root: {
     display: 'grid',
-    gridTemplateRow: 'auto 1fr',
-    gridTemplateColumns: '300px 1fr',
+    gridTemplateRows: 'auto 1fr',
+    gridTemplateColumns: '240px 1fr',
     gridTemplateAreas: `"header header" "sidebar main"`,
     height: '100vh',
   },
@@ -22,6 +24,7 @@ const useStyle = makeStyles((theme) => ({
   main: {
     gridArea: 'main',
     backgroundColor: theme.palette.background.paper,
+    padding: theme.spacing(2, 3),
   },
 }));
 
@@ -30,9 +33,22 @@ export function Admin() {
 
   return (
     <Box className={classes.root}>
-      <Box className={classes.header}><Header></Header></Box>
-      <Box className={classes.sidebar}><SideBar></SideBar></Box>
-      <Box className={classes.main}>Main</Box>
+      <Box className={classes.header}>
+        <Header></Header>
+      </Box>
+      <Box className={classes.sidebar}>
+        <SideBar></SideBar>
+      </Box>
+      <Box className={classes.main}>
+        <Switch>
+          <Route path="/admin/dashboard">
+            <DashBoard />
+          </Route>
+          <Route path="/admin/students">
+            <Students />
+          </Route>
+        </Switch>
+      </Box>
     </Box>
   );
 }
