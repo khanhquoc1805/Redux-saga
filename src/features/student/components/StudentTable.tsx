@@ -6,10 +6,11 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import { Student } from '../../../model';
-import { Button, Paper } from '@material-ui/core';
+import { City, Student } from '../../../model';
+import { Button, Paper,Box } from '@material-ui/core';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import CloseIcon from '@material-ui/icons/Close';
+import { capitalizeString, getColor } from '../../../utils';
 
 const useStyles = makeStyles(theme =>({
   
@@ -26,17 +27,23 @@ const useStyles = makeStyles(theme =>({
     },
     marginRight: theme.spacing(1),
   },
+  mark: {
+    fontWeight: 'bold'
+  }
 }));
 
 export interface StudentTableProps {
   studentList: Student[];
+  cityMap: {
+    [key: string] : City;
+  }
   onEdit?: (student: Student) => void,
   onRemove?: (student: Student) => void,
 }
 
 export default function StudentTable(props: StudentTableProps) {
   const classes = useStyles();
-  const {studentList, onEdit, onRemove } = props;
+  const {studentList, onEdit, onRemove, cityMap } = props;
 
   return (
     <TableContainer component={Paper}>
@@ -56,9 +63,9 @@ export default function StudentTable(props: StudentTableProps) {
             <TableRow key={student.id}>
               <TableCell >{student.id}</TableCell>
               <TableCell >{student.name}</TableCell>
-              <TableCell >{student.gender}</TableCell>
-              <TableCell >{student.mark}</TableCell>
-              <TableCell >{student.city}</TableCell>
+              <TableCell >{capitalizeString(student.gender)}</TableCell>
+              <TableCell ><Box color={getColor(student.mark)} className={classes.mark}>{student.mark}</Box></TableCell>
+              <TableCell >{cityMap[student.city]?.name}</TableCell>
               <TableCell align="right">
                 <Button color="primary" className={classes.primary} onClick={() => onEdit?.(student)}>
                   <EditOutlinedIcon fontSize="small"></EditOutlinedIcon>
