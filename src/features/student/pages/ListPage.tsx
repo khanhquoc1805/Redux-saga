@@ -1,11 +1,13 @@
 import { Box, Typography, Button, makeStyles, LinearProgress } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 import React, { useEffect } from 'react';
+import studentApi from '../../../api/studentApi';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { ListParams } from '../../../model';
+import { ListParams, Student } from '../../../model';
 import { selectCityList, selectCityMap } from '../../city/citySlice';
 import StudentFilters from '../components/StudentFilters';
 import StudentTable from '../components/StudentTable';
+import { Link, useHistory, useRouteMatch } from 'react-router-dom';
 import {
   selectStudentFilter,
   selectStudentList,
@@ -13,6 +15,7 @@ import {
   selectStudentPagination,
   studentActions,
 } from '../StudentSlice';
+import { toast } from 'react-toastify';
 
 const useStyle = makeStyles((theme) => ({
   root: {},
@@ -28,11 +31,16 @@ const useStyle = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
   },
+  link: {
+    textDecoration: 'none',
+  },
 }));
 
 export default function ListPage() {
   const dispatch = useAppDispatch();
   const classes = useStyle();
+  const match = useRouteMatch();
+  const history = useHistory();
 
   const studentList = useAppSelector(selectStudentList);
   const pagination = useAppSelector(selectStudentPagination);
@@ -55,24 +63,57 @@ export default function ListPage() {
   };
 
   const handleSearchChange = (newFilter: ListParams) => {
+    dispatch(studentActions.setFilterWithDebounce(newFilter));
+  };
+
+  const handleFilterChange = (newFilter: ListParams) => {
     dispatch(studentActions.setFilter(newFilter));
-    console.log(newFilter);
-  }
+  };
+
+  const handleRemoveStudent = async (student: Student) => {
+    try {
+      await studentApi.remove(student?.id || '');
+      toast.error('Remove SuccessFully!', {
+        position: 'top-center',
+        autoClose: 3000,
+      });
+      dispatch(studentActions.setFilter({ ...filter }));
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const handleEditStudent = async (student: Student) => {
+    history.push(`${match.url}/${student.id}`);
+  };
+
   return (
     <Box className={classes.root}>
       <Box mb={3}>{loading && <LinearProgress color="secondary" />}</Box>
       <Box className={classes.title}>
         <Typography variant="h4">STUDENTS</Typography>
-        <Button variant="contained" color="secondary">
-          ADD STUDENT
-        </Button>
+        <Link to={`${match.url}/add`} className={classes.link}>
+          <Button variant="contained" color="secondary">
+            ADD STUDENT
+          </Button>
+        </Link>
       </Box>
       <Box>
-        <StudentFilters filter={filter} cityList={cityList} onSearchChange={handleSearchChange}/> 
+        <StudentFilters
+          filter={filter}
+          cityList={cityList}
+          onSearchChange={handleSearchChange}
+          onChange={handleFilterChange}
+        />
       </Box>
 
       <Box>
-        <StudentTable studentList={studentList} cityMap={cityMap}></StudentTable>
+        <StudentTable
+          studentList={studentList}
+          cityMap={cityMap}
+          onRemove={handleRemoveStudent}
+          onEdit={handleEditStudent}
+        ></StudentTable>
       </Box>
       <Box mt={3} className={classes.pagination}>
         <Pagination

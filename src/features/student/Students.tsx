@@ -1,11 +1,11 @@
-import React, { ReactElement,useEffect } from 'react';
+import React, {useEffect } from 'react';
 import { Switch, useRouteMatch, Route } from 'react-router-dom';
 import { useAppDispatch } from '../../app/hooks';
 import { cityActions } from '../city/citySlice';
 import AddEditPage from './pages/AddEditPage';
 import ListPage from './pages/ListPage';
 
-interface Props {}
+
 
 export default function Students() {
   const match = useRouteMatch();

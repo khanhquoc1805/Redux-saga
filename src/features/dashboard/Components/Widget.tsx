@@ -1,5 +1,5 @@
 import { Box, makeStyles, Paper, Typography } from '@material-ui/core';
-import React, { ReactElement } from 'react';
+import React from 'react';
 
 interface WidgetProps {
   title: string;
